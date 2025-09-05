@@ -19,7 +19,6 @@ Sistema Java desktop para gerenciamento de matrículas universitárias com persi
 - Gerenciamento de cursos e disciplinas
 - Controle de períodos de matrícula
 - Verificação de disciplinas ativas (mínimo 3 alunos)
-- Integração com sistema de cobrança
 
 ## Regras de Negócio
 
@@ -27,7 +26,6 @@ Sistema Java desktop para gerenciamento de matrículas universitárias com persi
 2. **Disciplinas Ativas**: Só ficam ativas se tiverem pelo menos 3 alunos matriculados
 3. **Limite de Vagas**: Máximo de 60 alunos por disciplina
 4. **Períodos de Matrícula**: Sistema controla períodos específicos para matrículas
-5. **Sistema de Cobrança**: Notificação automática para geração de cobranças
 
 ## Estrutura do Projeto
 
@@ -40,8 +38,6 @@ Sistema Java desktop para gerenciamento de matrículas universitárias com persi
 - `Disciplina`: Representa disciplinas dos cursos
 - `Matricula`: Representa matrícula de aluno em disciplina
 - `PeriodoMatricula`: Gerencia períodos de matrícula
-- `SistemaCobranca`: Sistema de cobrança integrado
-- `Cobranca`: Representa uma cobrança individual
 - `GerenciadorArquivos`: Persistência em arquivos
 
 ### Persistência:
@@ -78,4 +74,3 @@ O sistema cria automaticamente a pasta `dados/` com os seguintes arquivos:
 - `disciplinas.txt`: Lista de disciplinas
 - `matriculas.txt`: Lista de matrículas
 - `periodos.txt`: Lista de períodos de matrícula
-- `cobrancas.txt`: Lista de cobranças

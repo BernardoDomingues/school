@@ -11,7 +11,6 @@ public class GerenciadorArquivos {
     private static final String ARQUIVO_DISCIPLINAS = "disciplinas.txt";
     private static final String ARQUIVO_MATRICULAS = "matriculas.txt";
     private static final String ARQUIVO_PERIODOS = "periodos.txt";
-    private static final String ARQUIVO_COBRANCAS = "cobrancas.txt";
 
     private SistemaMatriculas sistema;
 
@@ -323,83 +322,7 @@ public class GerenciadorArquivos {
         return periodos;
     }
 
-    public void salvarCobrancas(List<Cobranca> cobrancas) {
-        System.out.println("Salvando " + cobrancas.size() + " cobranças no arquivo: " + ARQUIVO_COBRANCAS);
-        try (PrintWriter writer = new PrintWriter(new FileWriter(DIRETORIO_DADOS + ARQUIVO_COBRANCAS))) {
-            for (Cobranca cobranca : cobrancas) {
-                String alunoId = cobranca.getAluno() != null ? cobranca.getAluno().getId() : "";
-                String dataGeracao = cobranca.getDataGeracao().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                String dataVencimento = cobranca.getDataVencimento().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-                // Salvar IDs das disciplinas separados por vírgula
-                StringBuilder disciplinasIds = new StringBuilder();
-                for (Disciplina disciplina : cobranca.getDisciplinas()) {
-                    if (disciplinasIds.length() > 0)
-                        disciplinasIds.append(",");
-                    disciplinasIds.append(disciplina.getId());
-                }
-
-                writer.println(cobranca.getId() + "|" + alunoId + "|" + disciplinasIds.toString() + "|" +
-                        cobranca.getValor() + "|" + dataGeracao + "|" + dataVencimento + "|" +
-                        cobranca.getValorPago() + "|" + cobranca.isPaga());
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar cobranças: " + e.getMessage());
-        }
-    }
-
-    public List<Cobranca> carregarCobrancas() {
-        System.out.println("Carregando cobranças do arquivo: " + ARQUIVO_COBRANCAS);
-        List<Cobranca> cobrancas = new ArrayList<>();
-        File arquivo = new File(DIRETORIO_DADOS + ARQUIVO_COBRANCAS);
-        if (!arquivo.exists()) {
-            System.out.println("Arquivo de cobranças não encontrado, criando lista vazia");
-            return cobrancas;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
-            String linha;
-            while ((linha = reader.readLine()) != null) {
-                String[] dados = linha.split("\\|");
-                if (dados.length >= 8) {
-                    String id = dados[0];
-                    String alunoId = dados[1];
-                    String disciplinasIds = dados[2];
-                    double valor = Double.parseDouble(dados[3]);
-                    LocalDateTime dataGeracao = LocalDateTime.parse(dados[4], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    LocalDateTime dataVencimento = LocalDateTime.parse(dados[5], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    double valorPago = Double.parseDouble(dados[6]);
-                    boolean paga = Boolean.parseBoolean(dados[7]);
-
-                    // Buscar aluno
-                    Aluno aluno = buscarAlunoPorId(alunoId);
-                    if (aluno != null) {
-                        // Buscar disciplinas
-                        List<Disciplina> disciplinas = new ArrayList<>();
-                        if (!disciplinasIds.isEmpty()) {
-                            String[] ids = disciplinasIds.split(",");
-                            for (String disciplinaId : ids) {
-                                Disciplina disciplina = buscarDisciplinaPorId(disciplinaId);
-                                if (disciplina != null) {
-                                    disciplinas.add(disciplina);
-                                }
-                            }
-                        }
-
-                        Cobranca cobranca = new Cobranca(id, aluno, disciplinas, valor, dataGeracao);
-                        cobranca.setDataVencimento(dataVencimento);
-                        cobranca.setValorPago(valorPago);
-                        cobranca.setPaga(paga);
-                        cobrancas.add(cobranca);
-                        System.out.println("Cobrança carregada: " + id);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao carregar cobranças: " + e.getMessage());
-        }
-        return cobrancas;
-    }
 
     // Métodos auxiliares para buscar entidades por ID
     private Aluno buscarAlunoPorId(String id) {
@@ -446,7 +369,6 @@ public class GerenciadorArquivos {
         salvarDisciplinas(sistema.getDisciplinas());
         salvarMatriculas(sistema.getMatriculas());
         salvarPeriodos(sistema.getPeriodosMatricula());
-        salvarCobrancas(sistema.getSistemaCobranca().getCobrancas());
         System.out.println("Todos os dados foram salvos com sucesso!");
     }
 
@@ -459,7 +381,6 @@ public class GerenciadorArquivos {
         List<Disciplina> disciplinas = carregarDisciplinas();
         List<Matricula> matriculas = carregarMatriculas();
         List<PeriodoMatricula> periodos = carregarPeriodos();
-        List<Cobranca> cobrancas = carregarCobrancas();
 
         sistema.getProfessores().clear();
         sistema.getProfessores().addAll(professores);
@@ -479,8 +400,6 @@ public class GerenciadorArquivos {
         sistema.getPeriodosMatricula().clear();
         sistema.getPeriodosMatricula().addAll(periodos);
 
-        sistema.getSistemaCobranca().getCobrancas().clear();
-        sistema.getSistemaCobranca().getCobrancas().addAll(cobrancas);
 
         System.out.println("Todos os dados foram carregados com sucesso!");
     }

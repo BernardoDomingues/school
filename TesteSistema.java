@@ -131,7 +131,6 @@ public class TesteSistema {
         sistema.getDisciplinas().clear();
         sistema.getMatriculas().clear();
         sistema.getPeriodosMatricula().clear();
-        sistema.getSistemaCobranca().getCobrancas().clear();
         System.out.println("Dados limpos da memória.");
     }
 
@@ -153,13 +152,6 @@ public class TesteSistema {
             System.out.println("Alunos matriculados em " + disciplina.getNome() + ": " + alunosMatriculados.size());
         }
 
-        if (sistema.getAlunos().size() > 0 && sistema.getDisciplinas().size() > 0) {
-            Aluno aluno = sistema.getAlunos().get(0);
-            List<Disciplina> disciplinasAluno = aluno.getDisciplinasMatriculadas();
-            if (!disciplinasAluno.isEmpty()) {
-                sistema.notificarSistemaCobranca(aluno, disciplinasAluno);
-            }
-        }
 
         if (sistema.getProfessores().size() > 0 && sistema.getDisciplinas().size() > 0) {
             Professor professor = sistema.getProfessores().get(0);
@@ -219,6 +211,5 @@ public class TesteSistema {
         System.out.println("Total de disciplinas: " + sistema.getDisciplinas().size());
         System.out.println("Total de matrículas: " + sistema.getMatriculas().size());
         System.out.println("Total de períodos de matrícula: " + sistema.getPeriodosMatricula().size());
-        System.out.println("Total de cobranças: " + sistema.getSistemaCobranca().getCobrancas().size());
     }
 }

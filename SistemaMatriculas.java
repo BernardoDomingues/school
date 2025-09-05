@@ -8,7 +8,6 @@ public class SistemaMatriculas {
     private List<Aluno> alunos;
     private List<Matricula> matriculas;
     private List<PeriodoMatricula> periodosMatricula;
-    private SistemaCobranca sistemaCobranca;
     private GerenciadorArquivos gerenciadorArquivos;
 
     private SistemaMatriculas() {
@@ -18,7 +17,6 @@ public class SistemaMatriculas {
         this.alunos = new ArrayList<>();
         this.matriculas = new ArrayList<>();
         this.periodosMatricula = new ArrayList<>();
-        this.sistemaCobranca = new SistemaCobranca();
         this.gerenciadorArquivos = new GerenciadorArquivos(this);
         carregarDados();
     }
@@ -66,10 +64,6 @@ public class SistemaMatriculas {
         return false;
     }
 
-    public void notificarSistemaCobranca(Aluno aluno, List<Disciplina> disciplinas) {
-        System.out.println("Notificando sistema de cobrança para aluno: " + aluno.getNome());
-        sistemaCobranca.gerarCobranca(aluno, disciplinas);
-    }
 
     public List<Curso> getCursos() {
         return cursos;
@@ -95,9 +89,6 @@ public class SistemaMatriculas {
         return periodosMatricula;
     }
 
-    public SistemaCobranca getSistemaCobranca() {
-        return sistemaCobranca;
-    }
 
     public GerenciadorArquivos getGerenciadorArquivos() {
         return gerenciadorArquivos;

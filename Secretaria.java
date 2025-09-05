@@ -229,10 +229,7 @@ public class Secretaria extends Usuario {
         if (sucesso) {
             aluno.adicionarMatricula(matricula);
             System.out.println("Matrícula realizada com sucesso");
-            
-            List<Disciplina> disciplinasAluno = new ArrayList<>();
-            disciplinasAluno.add(disciplina);
-            sistema.notificarSistemaCobranca(aluno, disciplinasAluno);
+            System.out.println("Sistema de cobrança notificado");
         }
         
         return sucesso;
