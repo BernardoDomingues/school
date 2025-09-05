@@ -16,17 +16,52 @@ public class Aluno extends Usuario {
 
     public boolean podeMatricular(Disciplina disciplina) {
         System.out.println("Verificando se aluno " + nome + " pode se matricular em " + disciplina.getNome());
+        
+        if (!disciplina.isAtiva()) {
+            System.out.println("Disciplina " + disciplina.getNome() + " não está ativa");
+            return false;
+        }
+        
+        if (disciplina.isLotada()) {
+            System.out.println("Disciplina " + disciplina.getNome() + " está lotada");
+            return false;
+        }
+        
+        for (Matricula matricula : matriculas) {
+            if (matricula.getDisciplina().equals(disciplina) && matricula.isAtiva()) {
+                System.out.println("Aluno já está matriculado na disciplina " + disciplina.getNome());
+                return false;
+            }
+        }
+        
+        if (!disciplina.getCurso().equals(curso)) {
+            System.out.println("Disciplina " + disciplina.getNome() + " não pertence ao curso " + curso.getNome());
+            return false;
+        }
+        
         return true;
     }
 
     public int getQuantidadeMatriculasObrigatorias() {
         System.out.println("Contando matrículas obrigatórias do aluno: " + nome);
-        return 0;
+        int count = 0;
+        for (Matricula matricula : matriculas) {
+            if (matricula.isObrigatoria() && matricula.isAtiva()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getQuantidadeMatriculasOptativas() {
         System.out.println("Contando matrículas optativas do aluno: " + nome);
-        return 0;
+        int count = 0;
+        for (Matricula matricula : matriculas) {
+            if (!matricula.isObrigatoria() && matricula.isAtiva()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void adicionarMatricula(Matricula matricula) {
