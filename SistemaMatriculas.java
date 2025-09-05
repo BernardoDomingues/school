@@ -42,7 +42,28 @@ public class SistemaMatriculas {
 
     public boolean realizarLogin(String usuario, String senha, TipoUsuario tipo) {
         System.out.println("Realizando login para usuário: " + usuario + " do tipo: " + tipo);
-        return true;
+        
+        if (tipo == TipoUsuario.ALUNO) {
+            for (Aluno aluno : alunos) {
+                if (aluno.getEmail().equals(usuario) && aluno.autenticar(senha)) {
+                    System.out.println("Login realizado com sucesso para aluno: " + aluno.getNome());
+                    return true;
+                }
+            }
+        } else if (tipo == TipoUsuario.PROFESSOR) {
+            for (Professor professor : professores) {
+                if (professor.getEmail().equals(usuario) && professor.autenticar(senha)) {
+                    System.out.println("Login realizado com sucesso para professor: " + professor.getNome());
+                    return true;
+                }
+            }
+        } else if (tipo == TipoUsuario.SECRETARIA) {
+            System.out.println("Login de secretaria - validação simplificada");
+            return true;
+        }
+        
+        System.out.println("Falha no login - usuário ou senha inválidos");
+        return false;
     }
 
     public void notificarSistemaCobranca(Aluno aluno, List<Disciplina> disciplinas) {
