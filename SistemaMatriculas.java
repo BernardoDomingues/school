@@ -45,26 +45,6 @@ public class SistemaMatriculas {
         return true;
     }
 
-    public boolean matricularAluno(Aluno aluno, Disciplina disciplina, boolean obrigatoria) {
-        System.out.println("Matriculando aluno " + aluno.getNome() + " na disciplina " + disciplina.getNome());
-        return true;
-    }
-
-    public boolean cancelarMatricula(Aluno aluno, Disciplina disciplina) {
-        System.out
-                .println("Cancelando matrícula do aluno " + aluno.getNome() + " na disciplina " + disciplina.getNome());
-        return true;
-    }
-
-    public void verificarDisciplinasAtivas() {
-        System.out.println("Verificando disciplinas ativas...");
-    }
-
-    public List<Aluno> getAlunosMatriculados(Disciplina disciplina) {
-        System.out.println("Obtendo alunos matriculados na disciplina: " + disciplina.getNome());
-        return new ArrayList<>();
-    }
-
     public void notificarSistemaCobranca(Aluno aluno, List<Disciplina> disciplinas) {
         System.out.println("Notificando sistema de cobrança para aluno: " + aluno.getNome());
         sistemaCobranca.gerarCobranca(aluno, disciplinas);

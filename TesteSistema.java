@@ -7,106 +7,121 @@ public class TesteSistema {
 
         SistemaMatriculas sistema = SistemaMatriculas.getInstance();
 
-        System.out.println("1. CRIANDO DADOS DE EXEMPLO:");
-        criarDadosExemplo(sistema);
+        Secretaria secretaria = new Secretaria("SEC001", "Maria da Secretaria", 
+                                             "secretaria@universidade.edu", "senha123", sistema);
+        System.out.println("Secretaria criada: " + secretaria.getNome());
+        System.out.println("Tipo de usuário: " + secretaria.getTipo());
+        
+        boolean autenticado = secretaria.autenticar("senha123");
+        System.out.println("Autenticação da secretaria: " + autenticado);
 
-        System.out.println("\n2. SALVANDO DADOS:");
-        sistema.salvarDados();
-
-        System.out.println("\n3. TESTANDO PERSISTÊNCIA:");
-        limparDadosMemoria(sistema);
-        sistema.carregarDados();
-
-        System.out.println("\n4. TESTANDO FUNCIONALIDADES:");
-        testarFuncionalidades(sistema);
-
-        System.out.println("\n=== TESTE CONCLUÍDO COM SUCESSO ===");
-    }
-
-    private static void criarDadosExemplo(SistemaMatriculas sistema) {
-        // Criar professores
-        Professor prof1 = new Professor("PROF001", "Dr. João Silva", "joao.silva@universidade.edu", "senha123", "12345",
-                "Programação");
-        Professor prof2 = new Professor("PROF002", "Dra. Maria Santos", "maria.santos@universidade.edu", "senha456",
-                "67890", "Banco de Dados");
-        sistema.getProfessores().add(prof1);
-        sistema.getProfessores().add(prof2);
-        System.out.println("Professores criados: " + prof1.getNome() + ", " + prof2.getNome());
-
-        // Criar cursos
+        System.out.println("\n=== TESTANDO FUNCIONALIDADES DA SECRETARIA ===");
+        
+        System.out.println("\n1. CRIANDO PROFESSORES:");
+        Professor prof1 = new Professor("PROF001", "Dr. João Silva", "joao.silva@universidade.edu", 
+                                       "senha123", "12345", "Programação");
+        Professor prof2 = new Professor("PROF002", "Dra. Maria Santos", "maria.santos@universidade.edu", 
+                                       "senha456", "67890", "Banco de Dados");
+        
+        secretaria.cadastrarProfessor(prof1);
+        secretaria.cadastrarProfessor(prof2);
+        
+        System.out.println("\n2. CRIANDO CURSOS:");
         Curso curso1 = new Curso("CUR001", "Ciência da Computação", 240, prof1);
         Curso curso2 = new Curso("CUR002", "Sistemas de Informação", 220, prof2);
-        sistema.getCursos().add(curso1);
-        sistema.getCursos().add(curso2);
-        System.out.println("Cursos criados: " + curso1.getNome() + ", " + curso2.getNome());
-
-        // Criar disciplinas
-        Disciplina disc1 = new Disciplina("DISC001", "Programação Orientada a Objetos", "POO001", 4, prof1, curso1,
-                true, "2024.1");
-        Disciplina disc2 = new Disciplina("DISC002", "Banco de Dados", "BD001", 4, prof2, curso1, true, "2024.1");
-        Disciplina disc3 = new Disciplina("DISC003", "Inteligência Artificial", "IA001", 3, prof1, curso1, false,
-                "2024.1");
-        sistema.getDisciplinas().add(disc1);
-        sistema.getDisciplinas().add(disc2);
-        sistema.getDisciplinas().add(disc3);
-        System.out.println("Disciplinas criadas: " + disc1.getNome() + ", " + disc2.getNome() + ", " + disc3.getNome());
-
-        // Criar alunos
-        Aluno aluno1 = new Aluno("ALU001", "Pedro Oliveira", "pedro.oliveira@universidade.edu", "senha789", "2024001",
-                curso1);
-        Aluno aluno2 = new Aluno("ALU002", "Ana Costa", "ana.costa@universidade.edu", "senha012", "2024002", curso1);
-        Aluno aluno3 = new Aluno("ALU003", "Carlos Lima", "carlos.lima@universidade.edu", "senha345", "2024003",
-                curso2);
-        sistema.getAlunos().add(aluno1);
-        sistema.getAlunos().add(aluno2);
-        sistema.getAlunos().add(aluno3);
-        System.out.println("Alunos criados: " + aluno1.getNome() + ", " + aluno2.getNome() + ", " + aluno3.getNome());
-
-        // Criar período de matrícula
+        
+        secretaria.cadastrarCurso(curso1);
+        secretaria.cadastrarCurso(curso2);
+        
+        System.out.println("\n3. DEFININDO COORDENADORES:");
+        secretaria.definirCoordenadorCurso(curso1, prof1);
+        secretaria.definirCoordenadorCurso(curso2, prof2);
+        
+        System.out.println("\n4. CRIANDO DISCIPLINAS:");
+        Disciplina disc1 = secretaria.criarDisciplina("DISC001", "Programação Orientada a Objetos", 
+                                                     "POO001", 4, prof1, curso1, true, "2024.1");
+        Disciplina disc2 = secretaria.criarDisciplina("DISC002", "Banco de Dados", 
+                                                     "BD001", 4, prof2, curso1, true, "2024.1");
+        Disciplina disc3 = secretaria.criarDisciplina("DISC003", "Inteligência Artificial", 
+                                                     "IA001", 3, prof1, curso1, false, "2024.1");
+        
+        System.out.println("\n5. ADICIONANDO DISCIPLINAS AOS CURSOS:");
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc1);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc2);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc3);
+        secretaria.adicionarDisciplinaAoCurso(curso2, disc2);
+        
+        System.out.println("\n6. CRIANDO ALUNOS:");
+        Aluno aluno1 = new Aluno("ALU001", "Pedro Oliveira", "pedro.oliveira@universidade.edu", 
+                                "senha789", "2024001", curso1);
+        Aluno aluno2 = new Aluno("ALU002", "Ana Costa", "ana.costa@universidade.edu", 
+                                "senha012", "2024002", curso1);
+        Aluno aluno3 = new Aluno("ALU003", "Carlos Lima", "carlos.lima@universidade.edu", 
+                                "senha345", "2024003", curso2);
+        secretaria.cadastrarAluno(aluno1);
+        secretaria.cadastrarAluno(aluno2);
+        secretaria.cadastrarAluno(aluno3);
+        
+        System.out.println("\n7. CRIANDO PERÍODO DE MATRÍCULA:");
         LocalDateTime inicio = LocalDateTime.now();
         LocalDateTime fim = inicio.plusDays(30);
-        PeriodoMatricula periodo = new PeriodoMatricula("PER001", "Matrícula 2024.1", inicio, fim, "2024.1");
-        periodo.iniciarPeriodo();
-        sistema.getPeriodosMatricula().add(periodo);
-        System.out.println("Período de matrícula criado: " + periodo.getNome());
+        secretaria.criarPeriodoMatricula("PER001", "Matrícula 2024.1", inicio, fim, "2024.1");
+        
+        PeriodoMatricula periodo = sistema.getPeriodosMatricula().get(0);
+        secretaria.iniciarPeriodoMatricula(periodo);
+        
+        System.out.println("\n8. GERANDO CURRÍCULO DO SEMESTRE:");
+        secretaria.gerarCurriculoSemestre("2024.1");
+        
+        System.out.println("\n9. REALIZANDO MATRÍCULAS:");
+        boolean mat1 = secretaria.matricularAluno(aluno1, disc1, true);
+        boolean mat2 = secretaria.matricularAluno(aluno1, disc2, true);
+        boolean mat3 = secretaria.matricularAluno(aluno2, disc1, true);
+        boolean mat4 = secretaria.matricularAluno(aluno2, disc3, false);
+        
+        System.out.println("Matrícula 1 (Pedro em POO): " + mat1);
+        System.out.println("Matrícula 2 (Pedro em BD): " + mat2);
+        System.out.println("Matrícula 3 (Ana em POO): " + mat3);
+        System.out.println("Matrícula 4 (Ana em IA): " + mat4);
+        
+        System.out.println("\n10. VERIFICANDO DISCIPLINAS ATIVAS:");
+        secretaria.verificarDisciplinasAtivas();
+        
+        System.out.println("\n11. GERANDO RELATÓRIOS:");
+        secretaria.gerarRelatorioGeral();
+        secretaria.gerarRelatorioMatriculas("2024.1");
+        secretaria.gerarRelatorioDisciplinas("2024.1");
+        
+        System.out.println("\n12. TESTANDO CONSULTAS:");
+        List<Aluno> alunosCurso1 = secretaria.getAlunosPorCurso(curso1);
+        System.out.println("Alunos do curso " + curso1.getNome() + ": " + alunosCurso1.size());
+        
+        List<Professor> profsProgramacao = secretaria.getProfessoresPorArea("Programação");
+        System.out.println("Professores de Programação: " + profsProgramacao.size());
+        
+        List<Disciplina> disciplinasSemestre = secretaria.getDisciplinasPorSemestre("2024.1");
+        System.out.println("Disciplinas do semestre 2024.1: " + disciplinasSemestre.size());
+        
+        List<Aluno> alunosPOO = secretaria.getAlunosMatriculados(disc1);
+        System.out.println("Alunos matriculados em POO: " + alunosPOO.size());
+        
+        System.out.println("\n13. TESTANDO CANCELAMENTO DE MATRÍCULA:");
+        boolean cancelamento = secretaria.cancelarMatricula(aluno2, disc3);
+        System.out.println("Cancelamento da matrícula de Ana em IA: " + cancelamento);
+        
+        System.out.println("\n14. SALVANDO DADOS:");
+        secretaria.salvarDados();
 
-        // Adicionar disciplinas aos cursos
-        curso1.adicionarDisciplina(disc1);
-        curso1.adicionarDisciplina(disc2);
-        curso1.adicionarDisciplina(disc3);
-        curso2.adicionarDisciplina(disc2);
+        System.out.println("\n15. TESTANDO PERSISTÊNCIA:");
+        limparDadosMemoria(sistema);
+        secretaria.carregarDados();
 
-        // Adicionar disciplinas aos professores
-        prof1.adicionarDisciplina(disc1);
-        prof1.adicionarDisciplina(disc3);
-        prof2.adicionarDisciplina(disc2);
+        System.out.println("\n16. TESTANDO FUNCIONALIDADES APÓS CARREGAMENTO:");
+        testarFuncionalidades(secretaria);
 
-        // Realizar matrículas
-        System.out.println("\nRealizando matrículas...");
-        Matricula mat1 = new Matricula("MAT001", aluno1, disc1, true, "2024.1");
-        Matricula mat2 = new Matricula("MAT002", aluno1, disc2, true, "2024.1");
-        Matricula mat3 = new Matricula("MAT003", aluno2, disc1, true, "2024.1");
-        Matricula mat4 = new Matricula("MAT004", aluno2, disc3, false, "2024.1");
-
-        sistema.getMatriculas().add(mat1);
-        sistema.getMatriculas().add(mat2);
-        sistema.getMatriculas().add(mat3);
-        sistema.getMatriculas().add(mat4);
-
-        // Adicionar alunos às disciplinas
-        disc1.matricularAluno(mat1);
-        disc1.matricularAluno(mat2);
-        disc2.matricularAluno(mat1);
-        disc3.matricularAluno(mat2);
-
-        // Adicionar matrículas aos alunos
-        aluno1.adicionarMatricula(mat1);
-        aluno1.adicionarMatricula(mat2);
-        aluno2.adicionarMatricula(mat3);
-        aluno2.adicionarMatricula(mat4);
-
-        System.out.println("Matrículas realizadas com sucesso!");
+        System.out.println("\n=== TESTE COMPLETO CONCLUÍDO COM SUCESSO ===");
     }
+
 
     private static void limparDadosMemoria(SistemaMatriculas sistema) {
         System.out.println("Limpando dados da memória...");
@@ -120,24 +135,24 @@ public class TesteSistema {
         System.out.println("Dados limpos da memória.");
     }
 
-    private static void testarFuncionalidades(SistemaMatriculas sistema) {
-        System.out.println("Testando funcionalidades do sistema...");
+    private static void testarFuncionalidades(Secretaria secretaria) {
+        SistemaMatriculas sistema = secretaria.getSistema();
+        System.out.println("Testando funcionalidades do sistema através da secretaria...");
 
-        // Testar login
+        boolean loginSecretaria = secretaria.autenticar("senha123");
+        System.out.println("Login da secretaria: " + loginSecretaria);
+
         boolean loginSucesso = sistema.realizarLogin("pedro.oliveira@universidade.edu", "senha789", TipoUsuario.ALUNO);
         System.out.println("Login do aluno: " + loginSucesso);
 
-        // Testar verificação de disciplinas ativas
-        sistema.verificarDisciplinasAtivas();
+        secretaria.verificarDisciplinasAtivas();
 
-        // Testar obtenção de alunos matriculados
         if (sistema.getDisciplinas().size() > 0) {
             Disciplina disciplina = sistema.getDisciplinas().get(0);
-            List<Aluno> alunosMatriculados = sistema.getAlunosMatriculados(disciplina);
+            List<Aluno> alunosMatriculados = secretaria.getAlunosMatriculados(disciplina);
             System.out.println("Alunos matriculados em " + disciplina.getNome() + ": " + alunosMatriculados.size());
         }
 
-        // Testar sistema de cobrança
         if (sistema.getAlunos().size() > 0 && sistema.getDisciplinas().size() > 0) {
             Aluno aluno = sistema.getAlunos().get(0);
             List<Disciplina> disciplinasAluno = aluno.getDisciplinasMatriculadas();
@@ -146,7 +161,6 @@ public class TesteSistema {
             }
         }
 
-        // Testar funcionalidades de professor
         if (sistema.getProfessores().size() > 0 && sistema.getDisciplinas().size() > 0) {
             Professor professor = sistema.getProfessores().get(0);
             Disciplina disciplina = sistema.getDisciplinas().get(0);
@@ -154,5 +168,57 @@ public class TesteSistema {
             System.out.println("Professor " + professor.getNome() + " tem " + alunosProfessor.size() + " alunos em "
                     + disciplina.getNome());
         }
+
+        System.out.println("\n=== TESTANDO FUNCIONALIDADES ESPECÍFICAS DA SECRETARIA ===");
+        
+        secretaria.gerarRelatorioGeral();
+        secretaria.gerarRelatorioMatriculas("2024.1");
+        secretaria.gerarRelatorioDisciplinas("2024.1");
+        
+        if (sistema.getCursos().size() > 0) {
+            Curso curso = sistema.getCursos().get(0);
+            List<Aluno> alunosCurso = secretaria.getAlunosPorCurso(curso);
+            System.out.println("Alunos do curso " + curso.getNome() + ": " + alunosCurso.size());
+        }
+        
+        if (sistema.getProfessores().size() > 0) {
+            Professor professor = sistema.getProfessores().get(0);
+            List<Professor> profsArea = secretaria.getProfessoresPorArea(professor.getAreaEspecializacao());
+            System.out.println("Professores da área " + professor.getAreaEspecializacao() + ": " + profsArea.size());
+        }
+        
+        List<Disciplina> disciplinasSemestre = secretaria.getDisciplinasPorSemestre("2024.1");
+        System.out.println("Disciplinas do semestre 2024.1: " + disciplinasSemestre.size());
+        
+        List<PeriodoMatricula> periodosAtivos = secretaria.getPeriodosAtivos();
+        System.out.println("Períodos de matrícula ativos: " + periodosAtivos.size());
+        
+        if (sistema.getAlunos().size() > 1 && sistema.getDisciplinas().size() > 2) {
+            Aluno aluno = sistema.getAlunos().get(1);
+            Disciplina disciplina = sistema.getDisciplinas().get(2);
+            boolean cancelamento = secretaria.cancelarMatricula(aluno, disciplina);
+            System.out.println("Cancelamento de matrícula: " + cancelamento);
+        }
+        
+        System.out.println("\n=== TESTANDO FUNCIONALIDADES ADICIONAIS ===");
+        
+        if (sistema.getAlunos().size() > 0) {
+            Aluno aluno = sistema.getAlunos().get(0);
+            System.out.println("Aluno encontrado: " + aluno.getNome() + " (" + aluno.getEmail() + ")");
+        }
+        
+        if (sistema.getPeriodosMatricula().size() > 0) {
+            PeriodoMatricula periodo = sistema.getPeriodosMatricula().get(0);
+            System.out.println("Período de matrícula: " + periodo.getNome() + " - Status: " + (periodo.isAtivo() ? "Ativo" : "Inativo"));
+        }
+        
+        System.out.println("\n=== ESTATÍSTICAS DO SISTEMA ===");
+        System.out.println("Total de alunos: " + sistema.getAlunos().size());
+        System.out.println("Total de professores: " + sistema.getProfessores().size());
+        System.out.println("Total de cursos: " + sistema.getCursos().size());
+        System.out.println("Total de disciplinas: " + sistema.getDisciplinas().size());
+        System.out.println("Total de matrículas: " + sistema.getMatriculas().size());
+        System.out.println("Total de períodos de matrícula: " + sistema.getPeriodosMatricula().size());
+        System.out.println("Total de cobranças: " + sistema.getSistemaCobranca().getCobrancas().size());
     }
 }
