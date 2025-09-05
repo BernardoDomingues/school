@@ -34,6 +34,22 @@ public class Professor extends Usuario {
 
     public boolean podeMinistrarDisciplina(Disciplina disciplina) {
         System.out.println("Verificando se professor " + nome + " pode ministrar " + disciplina.getNome());
+        
+        if (disciplina.getProfessor() != null && !disciplina.getProfessor().equals(this)) {
+            System.out.println("Disciplina já possui professor atribuído");
+            return false;
+        }
+        
+        if (disciplinasMinistradas.size() >= 5) {
+            System.out.println("Professor já possui o máximo de disciplinas (5)");
+            return false;
+        }
+        
+        if (disciplinasMinistradas.contains(disciplina)) {
+            System.out.println("Professor já ministra esta disciplina");
+            return false;
+        }
+        
         return true;
     }
 
