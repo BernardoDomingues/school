@@ -38,6 +38,11 @@ public class Aluno extends Usuario {
             System.out.println("Disciplina " + disciplina.getNome() + " não pertence ao curso " + curso.getNome());
             return false;
         }
+
+        if (disciplina.isObrigatoria() && getQuantidadeMatriculasObrigatorias() >= 4) {
+            System.out.println("Aluno já possui o máximo de 4 matrículas obrigatórias");
+            return false;
+        }
         
         return true;
     }
