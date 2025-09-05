@@ -44,6 +44,11 @@ public class Aluno extends Usuario {
             return false;
         }
         
+        if (!disciplina.isObrigatoria() && getQuantidadeMatriculasOptativas() >= 2) {
+            System.out.println("Aluno já possui o máximo de 2 matrículas optativas");
+            return false;
+        }
+        
         return true;
     }
 
