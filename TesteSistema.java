@@ -105,18 +105,140 @@ public class TesteSistema {
         List<Aluno> alunosPOO = secretaria.getAlunosMatriculados(disc1);
         System.out.println("Alunos matriculados em POO: " + alunosPOO.size());
         
-        System.out.println("\n13. TESTANDO CANCELAMENTO DE MATRÍCULA:");
+        System.out.println("\n13. TESTANDO LIMITES DE MATRÍCULAS OBRIGATÓRIAS:");
+        // Criar mais disciplinas obrigatórias para testar limite de 4
+        Disciplina disc4 = secretaria.criarDisciplina("DISC004", "Estruturas de Dados", 
+                                                     "ED001", 4, prof1, curso1, true, "2024.1");
+        Disciplina disc5 = secretaria.criarDisciplina("DISC005", "Algoritmos", 
+                                                     "ALG001", 4, prof1, curso1, true, "2024.1");
+        Disciplina disc6 = secretaria.criarDisciplina("DISC006", "Sistemas Operacionais", 
+                                                     "SO001", 4, prof1, curso1, true, "2024.1");
+        
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc4);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc5);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc6);
+        secretaria.ativarDisciplina(disc4);
+        secretaria.ativarDisciplina(disc5);
+        secretaria.ativarDisciplina(disc6);
+        
+        // Testar limite de 4 matrículas obrigatórias
+        System.out.println("Testando limite de 4 matrículas obrigatórias para Pedro:");
+        boolean mat5 = secretaria.matricularAluno(aluno1, disc4, true);
+        boolean mat6 = secretaria.matricularAluno(aluno1, disc5, true);
+        boolean mat7 = secretaria.matricularAluno(aluno1, disc6, true); // Deve falhar (5ª obrigatória)
+        
+        System.out.println("Matrícula 5 (Pedro em ED): " + mat5);
+        System.out.println("Matrícula 6 (Pedro em ALG): " + mat6);
+        System.out.println("Matrícula 7 (Pedro em SO - deve falhar): " + mat7);
+        System.out.println("Matrículas obrigatórias de Pedro: " + aluno1.getQuantidadeMatriculasObrigatorias());
+        
+        System.out.println("\n14. TESTANDO LIMITES DE MATRÍCULAS OPTATIVAS:");
+        // Criar mais disciplinas optativas para testar limite de 2
+        Disciplina disc7 = secretaria.criarDisciplina("DISC007", "Redes de Computadores", 
+                                                     "RED001", 3, prof1, curso1, false, "2024.1");
+        Disciplina disc8 = secretaria.criarDisciplina("DISC008", "Segurança da Informação", 
+                                                     "SEG001", 3, prof1, curso1, false, "2024.1");
+        Disciplina disc9 = secretaria.criarDisciplina("DISC009", "Engenharia de Software", 
+                                                     "ES001", 3, prof1, curso1, false, "2024.1");
+        
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc7);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc8);
+        secretaria.adicionarDisciplinaAoCurso(curso1, disc9);
+        secretaria.ativarDisciplina(disc7);
+        secretaria.ativarDisciplina(disc8);
+        secretaria.ativarDisciplina(disc9);
+        
+        // Testar limite de 2 matrículas optativas
+        System.out.println("Testando limite de 2 matrículas optativas para Ana:");
+        boolean mat8 = secretaria.matricularAluno(aluno2, disc7, false);
+        boolean mat9 = secretaria.matricularAluno(aluno2, disc8, false);
+        boolean mat10 = secretaria.matricularAluno(aluno2, disc9, false); // Deve falhar (3ª optativa)
+        
+        System.out.println("Matrícula 8 (Ana em RED): " + mat8);
+        System.out.println("Matrícula 9 (Ana em SEG): " + mat9);
+        System.out.println("Matrícula 10 (Ana em ES - deve falhar): " + mat10);
+        System.out.println("Matrículas optativas de Ana: " + aluno2.getQuantidadeMatriculasOptativas());
+        
+        System.out.println("\n15. TESTANDO LIMITE DE 60 ALUNOS POR DISCIPLINA:");
+        // Criar muitos alunos para testar limite de 60
+        System.out.println("Criando 62 alunos para testar limite de 60 por disciplina...");
+        for (int i = 1; i <= 62; i++) {
+            Aluno aluno = new Aluno("ALU" + String.format("%03d", i + 3), 
+                                   "Aluno " + i, "aluno" + i + "@universidade.edu", 
+                                   "senha" + i, "2024" + String.format("%03d", i + 3), curso1);
+            secretaria.cadastrarAluno(aluno);
+        }
+        
+        // Tentar matricular 62 alunos em uma disciplina (deve aceitar apenas 60)
+        Disciplina discTeste = secretaria.criarDisciplina("DISCTESTE", "Disciplina Teste", 
+                                                         "TEST001", 4, prof1, curso1, true, "2024.1");
+        secretaria.adicionarDisciplinaAoCurso(curso1, discTeste);
+        secretaria.ativarDisciplina(discTeste);
+        
+        int matriculasSucesso = 0;
+        int matriculasFalha = 0;
+        for (int i = 0; i < 62; i++) {
+            Aluno aluno = sistema.getAlunos().get(i + 3); // Pular os 3 alunos iniciais
+            boolean sucesso = secretaria.matricularAluno(aluno, discTeste, true);
+            if (sucesso) {
+                matriculasSucesso++;
+            } else {
+                matriculasFalha++;
+            }
+        }
+        
+        System.out.println("Matrículas bem-sucedidas: " + matriculasSucesso);
+        System.out.println("Matrículas que falharam: " + matriculasFalha);
+        System.out.println("Alunos matriculados na disciplina teste: " + discTeste.getQuantidadeAlunosMatriculados());
+        
+        System.out.println("\n16. TESTANDO VALIDAÇÕES DE NEGÓCIO:");
+        
+        // Teste 1: Matrícula com período inativo
+        System.out.println("\n16.1. Testando matrícula com período inativo:");
+        secretaria.encerrarPeriodoMatricula(periodo);
+        Aluno alunoTeste = new Aluno("ALUTESTE", "Aluno Teste", "teste@universidade.edu", 
+                                    "senha123", "2024999", curso1);
+        secretaria.cadastrarAluno(alunoTeste);
+        boolean matInativo = secretaria.matricularAluno(alunoTeste, disc1, true);
+        System.out.println("Matrícula com período inativo (deve falhar): " + matInativo);
+        
+        // Reativar período para próximos testes
+        secretaria.iniciarPeriodoMatricula(periodo);
+        
+        // Teste 2: Matrícula em disciplina inativa
+        System.out.println("\n16.2. Testando matrícula em disciplina inativa:");
+        Disciplina discInativa = secretaria.criarDisciplina("DISCINATIVA", "Disciplina Inativa", 
+                                                           "INAT001", 4, prof1, curso1, true, "2024.1");
+        secretaria.desativarDisciplina(discInativa);
+        boolean matInativa = secretaria.matricularAluno(alunoTeste, discInativa, true);
+        System.out.println("Matrícula em disciplina inativa (deve falhar): " + matInativa);
+        
+        // Teste 3: Matrícula em disciplina de outro curso
+        System.out.println("\n16.3. Testando matrícula em disciplina de outro curso:");
+        Disciplina discOutroCurso = secretaria.criarDisciplina("DISCOUTRO", "Disciplina Outro Curso", 
+                                                              "OUTRO001", 4, prof2, curso2, true, "2024.1");
+        secretaria.ativarDisciplina(discOutroCurso);
+        boolean matOutroCurso = secretaria.matricularAluno(alunoTeste, discOutroCurso, true);
+        System.out.println("Matrícula em disciplina de outro curso (deve falhar): " + matOutroCurso);
+        
+        // Teste 4: Matrícula duplicada
+        System.out.println("\n16.4. Testando matrícula duplicada:");
+        secretaria.ativarDisciplina(disc1);
+        boolean matDuplicada = secretaria.matricularAluno(aluno1, disc1, true);
+        System.out.println("Matrícula duplicada (deve falhar): " + matDuplicada);
+        
+        System.out.println("\n17. TESTANDO CANCELAMENTO DE MATRÍCULA:");
         boolean cancelamento = secretaria.cancelarMatricula(aluno2, disc3);
         System.out.println("Cancelamento da matrícula de Ana em IA: " + cancelamento);
         
-        System.out.println("\n14. SALVANDO DADOS:");
+        System.out.println("\n18. SALVANDO DADOS:");
         secretaria.salvarDados();
 
-        System.out.println("\n15. TESTANDO PERSISTÊNCIA:");
+        System.out.println("\n19. TESTANDO PERSISTÊNCIA:");
         limparDadosMemoria(sistema);
         secretaria.carregarDados();
 
-        System.out.println("\n16. TESTANDO FUNCIONALIDADES APÓS CARREGAMENTO:");
+        System.out.println("\n20. TESTANDO FUNCIONALIDADES APÓS CARREGAMENTO:");
         testarFuncionalidades(secretaria);
 
         System.out.println("\n=== TESTE COMPLETO CONCLUÍDO COM SUCESSO ===");
