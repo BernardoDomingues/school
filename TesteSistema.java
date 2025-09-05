@@ -94,10 +94,10 @@ public class TesteSistema {
         sistema.getMatriculas().add(mat4);
 
         // Adicionar alunos às disciplinas
-        disc1.matricularAluno(aluno1);
-        disc1.matricularAluno(aluno2);
-        disc2.matricularAluno(aluno1);
-        disc3.matricularAluno(aluno2);
+        disc1.matricularAluno(mat1);
+        disc1.matricularAluno(mat2);
+        disc2.matricularAluno(mat1);
+        disc3.matricularAluno(mat2);
 
         // Adicionar matrículas aos alunos
         aluno1.adicionarMatricula(mat1);

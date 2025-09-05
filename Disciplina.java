@@ -11,7 +11,7 @@ public class Disciplina {
     private boolean ativa;
     private int vagasDisponiveis;
     private int vagasTotais;
-    private List<Aluno> alunosMatriculados;
+    private List<Matricula> matriculas;
     private String semestre;
 
     public Disciplina(String id, String nome, String codigo, int creditos, Professor professor, Curso curso,
@@ -27,22 +27,22 @@ public class Disciplina {
         this.ativa = true;
         this.vagasTotais = 60;
         this.vagasDisponiveis = 60;
-        this.alunosMatriculados = new ArrayList<>();
+        this.matriculas = new ArrayList<>();
     }
 
-    public boolean matricularAluno(Aluno aluno) {
-        System.out.println("Matriculando aluno " + aluno.getNome() + " na disciplina " + nome);
+    public boolean matricularAluno(Matricula matricula) {
+        System.out.println("Matriculando aluno " + matricula.getAluno().getNome() + " na disciplina " + nome);
         if (vagasDisponiveis > 0 && ativa) {
-            alunosMatriculados.add(aluno);
+            matriculas.add(matricula);
             vagasDisponiveis--;
             return true;
         }
         return false;
     }
 
-    public boolean cancelarMatricula(Aluno aluno) {
-        System.out.println("Cancelando matrícula do aluno " + aluno.getNome() + " na disciplina " + nome);
-        if (alunosMatriculados.remove(aluno)) {
+    public boolean cancelarMatricula(Matricula matricula) {
+        System.out.println("Cancelando matrícula do aluno " + matricula.getAluno().getNome() + " na disciplina " + nome);
+        if (matriculas.remove(matricula)) {
             vagasDisponiveis++;
             return true;
         }
@@ -51,7 +51,7 @@ public class Disciplina {
 
     public boolean verificarSePodeSerAtivada() {
         System.out.println("Verificando se disciplina " + nome + " pode ser ativada");
-        boolean podeSerAtivada = alunosMatriculados.size() >= 3;
+        boolean podeSerAtivada = matriculas.size() >= 3;
         this.ativa = podeSerAtivada;
         return podeSerAtivada;
     }
@@ -63,12 +63,16 @@ public class Disciplina {
 
     public int getQuantidadeAlunosMatriculados() {
         System.out.println("Obtendo quantidade de alunos matriculados na disciplina: " + nome);
-        return alunosMatriculados.size();
+        return matriculas.size();
     }
 
     public List<Aluno> getAlunosMatriculados() {
         System.out.println("Obtendo lista de alunos matriculados na disciplina: " + nome);
-        return new ArrayList<>(alunosMatriculados);
+        List<Aluno> alunos = new ArrayList<>();
+        for (Matricula matricula : matriculas) {
+            alunos.add(matricula.getAluno());
+        }
+        return alunos;
     }
 
     public String getId() {
@@ -159,7 +163,7 @@ public class Disciplina {
         this.semestre = semestre;
     }
 
-    public void setAlunosMatriculados(List<Aluno> alunosMatriculados) {
-        this.alunosMatriculados = alunosMatriculados;
+    public void setAlunosMatriculados(List<Matricula> matriculas) {
+        this.matriculas = matriculas;
     }
 }
