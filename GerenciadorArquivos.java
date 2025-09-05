@@ -7,6 +7,7 @@ public class GerenciadorArquivos {
     private static final String DIRETORIO_DADOS = "dados/";
     private static final String ARQUIVO_ALUNOS = "alunos.txt";
     private static final String ARQUIVO_PROFESSORES = "professores.txt";
+    private static final String ARQUIVO_SECRETARIAS = "secretarias.txt";
     private static final String ARQUIVO_CURSOS = "cursos.txt";
     private static final String ARQUIVO_DISCIPLINAS = "disciplinas.txt";
     private static final String ARQUIVO_MATRICULAS = "matriculas.txt";
@@ -118,6 +119,47 @@ public class GerenciadorArquivos {
             System.out.println("Erro ao carregar professores: " + e.getMessage());
         }
         return professores;
+    }
+
+    public void salvarSecretarias(List<Secretaria> secretarias) {
+        System.out.println("Salvando " + secretarias.size() + " secretarias no arquivo: " + ARQUIVO_SECRETARIAS);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(DIRETORIO_DADOS + ARQUIVO_SECRETARIAS))) {
+            for (Secretaria secretaria : secretarias) {
+                writer.println(secretaria.getId() + "|" + secretaria.getNome() + "|" + secretaria.getEmail() + "|senha123");
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar secretarias: " + e.getMessage());
+        }
+    }
+
+    public List<Secretaria> carregarSecretarias() {
+        System.out.println("Carregando secretarias do arquivo: " + ARQUIVO_SECRETARIAS);
+        List<Secretaria> secretarias = new ArrayList<>();
+        File arquivo = new File(DIRETORIO_DADOS + ARQUIVO_SECRETARIAS);
+        if (!arquivo.exists()) {
+            System.out.println("Arquivo de secretarias não encontrado, criando lista vazia");
+            return secretarias;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] dados = linha.split("\\|");
+                if (dados.length >= 4) {
+                    String id = dados[0];
+                    String nome = dados[1];
+                    String email = dados[2];
+                    String senha = dados[3];
+
+                    Secretaria secretaria = new Secretaria(id, nome, email, senha, sistema);
+                    secretarias.add(secretaria);
+                    System.out.println("Secretaria carregada: " + nome);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao carregar secretarias: " + e.getMessage());
+        }
+        return secretarias;
     }
 
     public void salvarCursos(List<Curso> cursos) {
@@ -365,6 +407,7 @@ public class GerenciadorArquivos {
         System.out.println("Salvando todos os dados do sistema...");
         salvarAlunos(sistema.getAlunos());
         salvarProfessores(sistema.getProfessores());
+        salvarSecretarias(sistema.getSecretarias());
         salvarCursos(sistema.getCursos());
         salvarDisciplinas(sistema.getDisciplinas());
         salvarMatriculas(sistema.getMatriculas());
@@ -376,6 +419,7 @@ public class GerenciadorArquivos {
         System.out.println("Carregando todos os dados do sistema...");
 
         List<Professor> professores = carregarProfessores();
+        List<Secretaria> secretarias = carregarSecretarias();
         List<Curso> cursos = carregarCursos();
         List<Aluno> alunos = carregarAlunos();
         List<Disciplina> disciplinas = carregarDisciplinas();
@@ -384,6 +428,9 @@ public class GerenciadorArquivos {
 
         sistema.getProfessores().clear();
         sistema.getProfessores().addAll(professores);
+
+        sistema.getSecretarias().clear();
+        sistema.getSecretarias().addAll(secretarias);
 
         sistema.getCursos().clear();
         sistema.getCursos().addAll(cursos);

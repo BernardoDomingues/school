@@ -6,6 +6,7 @@ public class SistemaMatriculas {
     private List<Disciplina> disciplinas;
     private List<Professor> professores;
     private List<Aluno> alunos;
+    private List<Secretaria> secretarias;
     private List<Matricula> matriculas;
     private List<PeriodoMatricula> periodosMatricula;
     private GerenciadorArquivos gerenciadorArquivos;
@@ -15,6 +16,7 @@ public class SistemaMatriculas {
         this.disciplinas = new ArrayList<>();
         this.professores = new ArrayList<>();
         this.alunos = new ArrayList<>();
+        this.secretarias = new ArrayList<>();
         this.matriculas = new ArrayList<>();
         this.periodosMatricula = new ArrayList<>();
         this.gerenciadorArquivos = new GerenciadorArquivos(this);
@@ -56,8 +58,12 @@ public class SistemaMatriculas {
                 }
             }
         } else if (tipo == TipoUsuario.SECRETARIA) {
-            System.out.println("Login de secretaria - validação simplificada");
-            return true;
+            for (Secretaria secretaria : secretarias) {
+                if (secretaria.getEmail().equals(usuario) && secretaria.autenticar(senha)) {
+                    System.out.println("Login realizado com sucesso para secretaria: " + secretaria.getNome());
+                    return true;
+                }
+            }
         }
         
         System.out.println("Falha no login - usuário ou senha inválidos");
@@ -79,6 +85,10 @@ public class SistemaMatriculas {
 
     public List<Aluno> getAlunos() {
         return alunos;
+    }
+
+    public List<Secretaria> getSecretarias() {
+        return secretarias;
     }
 
     public List<Matricula> getMatriculas() {

@@ -7,9 +7,18 @@ public class TesteSistema {
 
         SistemaMatriculas sistema = SistemaMatriculas.getInstance();
 
-        Secretaria secretaria = new Secretaria("SEC001", "Maria da Secretaria", 
-                                             "secretaria@universidade.edu", "senha123", sistema);
-        System.out.println("Secretaria criada: " + secretaria.getNome());
+        // Verificar se já existe uma secretaria carregada
+        Secretaria secretaria;
+        if (sistema.getSecretarias().isEmpty()) {
+            secretaria = new Secretaria("SEC001", "Maria da Secretaria", 
+                                     "secretaria@universidade.edu", "senha123", sistema);
+            sistema.getSecretarias().add(secretaria);
+            sistema.salvarDados();
+            System.out.println("Secretaria criada: " + secretaria.getNome());
+        } else {
+            secretaria = sistema.getSecretarias().get(0);
+            System.out.println("Secretaria carregada: " + secretaria.getNome());
+        }
         System.out.println("Tipo de usuário: " + secretaria.getTipo());
         
         boolean autenticado = secretaria.autenticar("senha123");
